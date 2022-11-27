@@ -16,7 +16,7 @@ function App() {
     const currentWeatherFetch = fetch(`${WEATHER_API_URL}/weather?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`);
     const forecastFeth = fetch(`${WEATHER_API_URL}/forecast?lat=${lat}&lon=${lon}&appid=${WEATHER_API_KEY}`);
 
-    Promise.all([currentWeatherFetch, forecastFeth])
+    Promise.all([currentWeatherFetch, forecastFetch])
     .then(async (response) => {
       const weatherResponse = await response[0].json();
       const forecastResponse = await response[1].json();
@@ -29,9 +29,14 @@ function App() {
   return (
     <div className="container">
       <Search onSearchChange={handleOnSearchChange} />
-      <CurrentWeather />
+      {currentWeather && <CurrentWeather data{currentWeather} />}
     </div>
   );
+  .catch((err) => console.log(err));
 }
+
+console.log(currentWeather);
+console.log(forecast);
+
 
 export default App;
