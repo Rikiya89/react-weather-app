@@ -46,7 +46,7 @@
 }
 
 .daily-details-grid-item {
-   padding: 5px, 15px;
+   padding: 5px 15px;
    display: flex;
    height: 30px;
    justify-content: space-between;
