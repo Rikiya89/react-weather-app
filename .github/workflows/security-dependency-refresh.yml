@@ -21,7 +21,9 @@ jobs:
           node-version: '22'
           cache: npm
       - name: Refresh lockfile for patched dependency constraints
-        run: npm install --package-lock-only --ignore-scripts
+        run: |
+          rm package-lock.json
+          npm install --package-lock-only --ignore-scripts
       - name: Commit refreshed lockfile if changed
         run: |
           if ! git diff --quiet -- package-lock.json; then
