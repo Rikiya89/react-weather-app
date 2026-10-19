@@ -1,0 +1,41 @@
+name: Security dependency refresh
+
+on:
+  push:
+    branches:
+      - security/dependabot-high-moderate-20261019
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  security-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Refresh lockfile for patched dependency constraints
+        run: npm install --package-lock-only --ignore-scripts
+      - name: Commit refreshed lockfile if changed
+        run: |
+          if ! git diff --quiet -- package-lock.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add package-lock.json
+            git commit -m "chore(lockfile): resolve patched dependencies"
+            git push
+          fi
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Tests
+        run: npm test -- --run
+      - name: Audit high and moderate vulnerabilities
+        run: npm audit --audit-level=moderate
